@@ -11,6 +11,7 @@ swagger:
 	swagger generate spec -o ./swagger.yaml --scan-models
 
 run: swagger
+	go install
 	@echo ....
 	@echo Starting server
 	go run main.go
