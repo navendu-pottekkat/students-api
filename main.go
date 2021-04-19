@@ -9,6 +9,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/go-openapi/runtime/middleware"
 	"github.com/gorilla/mux"
 	"github.com/navendu-pottekkat/students-api/handlers"
 )
@@ -27,6 +28,13 @@ func main() {
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/", sh.AddStudent)
 	postRouter.Use(sh.MiddlewareValidateStudent)
+
+	// Handler for documentation
+	opts := middleware.RedocOpts{SpecURL: "/swagger.yaml"}
+	sph := middleware.Redoc(opts, nil)
+
+	getRouter.Handle("/docs", sph)
+	getRouter.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
 
 	// Create a new server
 	s := http.Server{
